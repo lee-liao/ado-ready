@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git config *)",
+      "Bash(git --version)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(gh repo *)",
+      "Bash(git check-ignore *)",
+      "mcp__ado__core_list_projects",
+      "mcp__azure-devops__list_projects",
+      "mcp__azure-devops__get_work_item",
+      "Bash(curl *)",
+      "Bash(mkdir *)",
+      "Bash(echo *)",
+      "Read",
+      "Write",
+      "Edit",
+      "MultiEdit",
+      "Bash(python3 *)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "azure-devops"
+  ],
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/confine_writes.py\""
+          }
+        ]
+      }
+    ]
+  }
+}
