@@ -1,2 +1,6 @@
 # Claude Code local settings (per-user, not shared)
 .claude/settings.local.json
+
+# Per-task scratch — golden_session defaults run output to <workspace>/runs/<ts>;
+# generated artifacts must never pollute the template source.
+runs/
