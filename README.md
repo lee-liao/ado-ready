@@ -41,12 +41,11 @@ hook (below) confines every write to it.
 |---|---|
 | `.claude/gold-context.md` | Stable priming context for `prime --context-file` (what this workspace is, which ADO org/project, where secrets live). |
 | `.claude/settings.json` | Git-tracked config — the confine-writes hook, `permissions`, `enabledMcpjsonServers`. **No secrets.** |
-| `.claude/settings.local.json` | Per-machine secrets — the `env` block only (`AZURE_DEVOPS_PAT`, org URL, project). Gitignored. |
+| `.claude/settings.local.json` | Per-machine secrets — the `env` block only (`AZURE_DEVOPS_PAT`, `ADO_MCP_AUTH_TOKEN`, org URL). Gitignored. |
 | `.claude/confine_writes.py` | PreToolUse hook — blocks any `Write`/`Edit`/`MultiEdit` outside the task's `GS_RUN_DIR` (engine feature F12). Inherited by every fork; boundary is per-task. |
 | `.claude/ado_download.py` | Authenticated attachment download — reads `AZURE_DEVOPS_PAT` from `os.environ` so no secret and no `$VAR` appears on a Bash line. |
-| `.mcp.json` | Registers the `azure-devops` stdio MCP server (`@tiberriver256/mcp-server-azure-devops`) for reading work items, repos, pipelines, PRs. |
+| `.mcp.json` | Registers the `ado` stdio MCP server (`@azure-devops/mcp`, the official Microsoft server) for reading work items, repos, pipelines, wikis, test plans, PRs. |
 | `ado-workitem-task.md` | Parameterized task prompt (`${WORK_ITEM_ID}`) with the headless rules a fork must obey. |
-| `src/`, `test/` | Sample extraction script and reference input/output artifacts from a prior run (illustrative, not part of the harness). |
 
 ## Why the output-isolation hook matters
 
@@ -67,11 +66,18 @@ block into its process; the MCP server inherits it as a child process, and the
 fork's `python3`/Bash reads the same values via `os.environ`. Single source of
 truth, never committed.
 
+Two consumers, two env var names, same raw PAT value:
+
+- `AZURE_DEVOPS_PAT` — read by `.claude/ado_download.py` for REST attachment
+  downloads.
+- `ADO_MCP_AUTH_TOKEN` — read by the `ado` MCP server itself
+  (`--authentication envvar` in `.mcp.json`).
+
 | File | Git-tracked? | Contents |
 |------|:---:|----------|
 | `.claude/settings.json` | **yes** | hooks, `permissions`, `enabledMcpjsonServers` — no secrets |
-| `.claude/settings.local.json` | **no** | `env` block only: PAT, org URL, project |
-| `.mcp.json` | **no** | server `command` + `args` only — no `env` block |
+| `.claude/settings.local.json` | **no** | `env` block only: `AZURE_DEVOPS_PAT`, `ADO_MCP_AUTH_TOKEN`, org URL |
+| `.mcp.json` | **yes** | server `command` + `args`, plus non-secret defaults (org, default project) — no PAT |
 
 ## Headless task-prompt rules
 

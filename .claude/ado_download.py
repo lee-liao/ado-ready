@@ -3,9 +3,10 @@
 
 Why this helper exists
 ----------------------
-The ADO MCP server (`@tiberriver256/mcp-server-azure-devops`) has no
-attachment-download tool, so fetching a work-item attachment means an
-authenticated GET against the ADO REST endpoint. The obvious one-liner
+Fetching a work-item attachment's binary content means an authenticated GET
+against the ADO REST endpoint (the `ado` MCP server, `@azure-devops/mcp`, is
+not used for this — its attachment tool has not been verified as a binary
+content download). The obvious one-liner
 ``curl -u ":$AZURE_DEVOPS_PAT" <url>`` is *blocked* under headless
 `claude -p`, which rejects any Bash command containing `$VAR`
 ("Contains simple_expansion") — a second security layer beyond the

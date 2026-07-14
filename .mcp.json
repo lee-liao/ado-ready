@@ -1,8 +1,11 @@
 {
   "mcpServers": {
-    "azure-devops": {
+    "ado": {
       "command": "npx",
-      "args": ["-y", "@tiberriver256/mcp-server-azure-devops"]
+      "args": ["-y", "@azure-devops/mcp", "cubeforest3003", "--authentication", "envvar"],
+      "env": {
+        "ado_mcp_project": "powerBI-demo"
+      }
     }
   }
 }

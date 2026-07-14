@@ -9,8 +9,7 @@
       "Bash(gh repo *)",
       "Bash(git check-ignore *)",
       "mcp__ado__core_list_projects",
-      "mcp__azure-devops__list_projects",
-      "mcp__azure-devops__get_work_item",
+      "mcp__ado__wit_get_work_item",
       "Bash(curl *)",
       "Bash(mkdir *)",
       "Bash(echo *)",
@@ -22,7 +21,7 @@
     ]
   },
   "enabledMcpjsonServers": [
-    "azure-devops"
+    "ado"
   ],
   "hooks": {
     "PreToolUse": [

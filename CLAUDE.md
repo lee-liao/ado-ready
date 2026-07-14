@@ -23,19 +23,26 @@ When you run *inside a fork* (headless `claude -p`), obey the rules in
 
 ## Azure DevOps MCP integration
 
-`.mcp.json` registers a stdio MCP server named `azure-devops`
-(`@tiberriver256/mcp-server-azure-devops`) for the `cubeforest3003` organization
-(project `powerBI-demo`), exposing tools to read work items, repos, pipelines, and
-pull requests. The server has no attachment-download tool — that is why
-`.claude/ado_download.py` exists.
+`.mcp.json` registers a stdio MCP server named `ado` (`@azure-devops/mcp`, the
+official Microsoft server) for the `cubeforest3003` organization (default
+project `powerBI-demo`), exposing tools to read work items, repos, pipelines,
+wikis, test plans, and pull requests. Attachment binaries are still fetched via
+REST, not an MCP tool — that is why `.claude/ado_download.py` exists.
 
 ## Secrets
 
-The `AZURE_DEVOPS_PAT` lives **only** in the `env` block of
-`.claude/settings.local.json` (gitignored via `.gitignore` — already present).
-Never put it in `.mcp.json` or `.claude/settings.json` (git-tracked). Claude Code
-injects that `env` block into its process; the MCP server and the fork's
-`python3`/Bash inherit it.
+Two env vars carry the same raw PAT, for two different consumers, and both live
+**only** in the `env` block of `.claude/settings.local.json` (gitignored via
+`.gitignore` — already present):
+
+- `AZURE_DEVOPS_PAT` — read by `.claude/ado_download.py` and any inline REST
+  calls.
+- `ADO_MCP_AUTH_TOKEN` — read by the `ado` MCP server (`--authentication
+  envvar` in `.mcp.json`).
+
+Never put either in `.mcp.json` or `.claude/settings.json` (git-tracked).
+Claude Code injects the `env` block into its process; the MCP server and the
+fork's `python3`/Bash inherit it.
 
 ## Layout
 
@@ -44,10 +51,7 @@ injects that `env` block into its process; the MCP server and the fork's
 - `.claude/ado_download.py` — authenticated attachment download (reads PAT from env)
 - `.claude/gold-context.md` — stable priming context for `prime --context-file`
 - `ado-workitem-task.md` — parameterized `${WORK_ITEM_ID}` task prompt
-- `src/`, `test/` — sample extraction script and reference input/output artifacts (illustrative)
 
 ## Build / test
 
-There is no build or lint step. `src/extract_csv.py` is a sample one-off (with
-hard-coded paths from a prior run), not a maintained module — treat it as a
-reference artifact, not a command to run.
+There is no build, lint, or test step.

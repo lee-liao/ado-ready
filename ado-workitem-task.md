@@ -19,8 +19,8 @@ Rules (headless — do not violate):
    missing, STOP and report it plainly. Do not fabricate a result.
 
 Steps:
-1. Read work item ${WORK_ITEM_ID} via the azure-devops MCP tools
-   (`mcp__azure-devops__get_work_item`). Note its attachment relations.
+1. Read work item ${WORK_ITEM_ID} via the ado MCP tools
+   (`mcp__ado__wit_get_work_item`). Note its attachment relations.
 2. Resolve GS_RUN_DIR (rule 1). Create `<GS_RUN_DIR>/input` and
    `<GS_RUN_DIR>/out` with `mkdir`.
 3. If there is an attachment, download it into `<GS_RUN_DIR>/input` with
